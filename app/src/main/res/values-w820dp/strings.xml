@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="grey_pencil">grey pencil</string>
+    <string name="notebook_image">notebook image</string>
+    <string name="empty_view_title_text">Looks like you don\'t have anything to do...</string>
+    <string name="empty_view_subtitle_text">...why don\'t you add something?</string>
+</resources>
