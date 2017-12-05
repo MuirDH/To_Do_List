@@ -48,6 +48,9 @@ public class MainActivity extends AppCompatActivity implements
     EmptyRecyclerView mRecyclerView;
     View emptyView;
 
+    static String toDoItem;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +121,22 @@ public class MainActivity extends AppCompatActivity implements
                 startActivity(addTaskIntent);
             }
         });
+
+        // TODO: Fix wrong item display bug (Currently displays item 3 when item 2 is clicked)
+        ItemClickSupport.addTo(mRecyclerView)
+                .setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+                    @Override
+                    public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                        Intent editTaskIntent = new Intent(MainActivity.this, AddTaskActivity.class);
+                        toDoItem = mAdapter.description;
+
+                        editTaskIntent.putExtra("Edit",toDoItem);
+                        startActivity(editTaskIntent);
+
+                    }
+                });
+
+
 
         /*
          Ensure a loader is initialized and active. If the loader doesn't already exist, one is

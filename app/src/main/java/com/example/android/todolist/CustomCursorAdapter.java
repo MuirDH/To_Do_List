@@ -39,6 +39,10 @@ public class CustomCursorAdapter extends RecyclerView.Adapter<CustomCursorAdapte
     private Cursor mCursor;
     private Context mContext;
 
+    String description; // to do item
+
+
+
 
     /**
      * Constructor for the CustomCursorAdapter that initializes the Context.
@@ -84,7 +88,7 @@ public class CustomCursorAdapter extends RecyclerView.Adapter<CustomCursorAdapte
 
         // Determine the values of the wanted data
         final int id = mCursor.getInt(idIndex);
-        String description = mCursor.getString(descriptionIndex);
+        description = mCursor.getString(descriptionIndex);
         int priority = mCursor.getInt(priorityIndex);
 
         //Set values
@@ -99,6 +103,7 @@ public class CustomCursorAdapter extends RecyclerView.Adapter<CustomCursorAdapte
         // Get the appropriate background color based on the priority
         int priorityColor = getPriorityColor(priority);
         priorityCircle.setColor(priorityColor);
+
 
     }
 
@@ -156,7 +161,7 @@ public class CustomCursorAdapter extends RecyclerView.Adapter<CustomCursorAdapte
 
 
     // Inner class for creating ViewHolders
-    class TaskViewHolder extends RecyclerView.ViewHolder {
+    class TaskViewHolder extends RecyclerView.ViewHolder{
 
         // Class variables for the task description and priority TextViews
         TextView taskDescriptionView;
@@ -172,6 +177,10 @@ public class CustomCursorAdapter extends RecyclerView.Adapter<CustomCursorAdapte
 
             taskDescriptionView = (TextView) itemView.findViewById(R.id.taskDescription);
             priorityView = (TextView) itemView.findViewById(R.id.priorityTextView);
+
         }
+
     }
+
+
 }

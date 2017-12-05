@@ -17,6 +17,7 @@
 package com.example.android.todolist;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -32,15 +33,33 @@ public class AddTaskActivity extends AppCompatActivity {
 
     // Declare a member variable to keep track of a task's selected mPriority
     private int mPriority;
+    Intent editIntent;
+    Bundle extras;
+    EditText text = (EditText) findViewById(R.id.editTextTaskDescription);
 
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task);
 
+        editIntent = getIntent();
+        extras = editIntent.getExtras();
+
         // Initialize to highest mPriority by default (mPriority = 1)
         ((RadioButton) findViewById(R.id.radButton1)).setChecked(true);
         mPriority = 1;
+
+        // insert the text in the clicked on item, if applicable
+        insertTextToBeEdited();
+
+
+    }
+
+    private void insertTextToBeEdited() {
+        if (extras != null) {
+            String textToBeEdited = (String) extras.get("Edit");
+            text.setText(textToBeEdited);
+        }
     }
 
 
@@ -49,10 +68,11 @@ public class AddTaskActivity extends AppCompatActivity {
      * It retrieves user input and inserts that new task data into the underlying database.
      */
     public void onClickAddTask(View view) {
-        // Not yet implemented
         // Check if EditText is empty, if not retrieve input and store it in a ContentValues object
         // If the EditText input is empty -> don't create an entry
-        String input = ((EditText) findViewById(R.id.editTextTaskDescription)).getText().toString();
+        String input = text.getText().toString();
+        Uri uri;
+
         if (input.length() == 0) {
             return;
         }
@@ -64,7 +84,7 @@ public class AddTaskActivity extends AppCompatActivity {
         contentValues.put(TaskContract.TaskEntry.COLUMN_DESCRIPTION, input);
         contentValues.put(TaskContract.TaskEntry.COLUMN_PRIORITY, mPriority);
         // Insert the content values via a ContentResolver
-        Uri uri = getContentResolver().insert(TaskContract.TaskEntry.CONTENT_URI, contentValues);
+        uri = getContentResolver().insert(TaskContract.TaskEntry.CONTENT_URI, contentValues);
 
         // Display the URI that's returned with a Toast
         // [Hint] Don't forget to call finish() to return to MainActivity after this insert is complete
