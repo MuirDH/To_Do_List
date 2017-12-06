@@ -37,7 +37,7 @@ public class TaskContentProvider extends ContentProvider {
     public static final int TASKS = 100;
     public static final int TASK_WITH_ID = 101;
 
-    // CDeclare a static variable for the Uri matcher that you construct
+    // Declare a static variable for the Uri matcher that you construct
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
     // Define a static buildUriMatcher method that associates URI's with their int match
@@ -210,7 +210,7 @@ public class TaskContentProvider extends ContentProvider {
                 // using selections
                 tasksUpdated = mTaskDbHelper.getWritableDatabase().update(TABLE_NAME,
                         values,
-                        "_id=?",
+                        "id=?",
                         new String[]{id});
 
                 break;

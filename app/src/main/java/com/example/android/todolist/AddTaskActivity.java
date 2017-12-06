@@ -101,7 +101,7 @@ public class AddTaskActivity extends AppCompatActivity {
             contentValues = new ContentValues();
             contentValues.put(TaskContract.TaskEntry.COLUMN_DESCRIPTION, input);
             contentValues.put(TaskContract.TaskEntry.COLUMN_PRIORITY, mPriority);
-            getContentResolver().update(TaskContract.TaskEntry.CONTENT_URI, contentValues,
+            getContentResolver().update(Uri.parse(TaskContract.TaskEntry.CONTENT_URI + "/" + item), contentValues,
                     TaskContract.TaskEntry._ID + "=?", new String[]{String.valueOf(item)});
 
         }else {
