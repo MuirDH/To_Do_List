@@ -204,7 +204,7 @@ public class TaskContentProvider extends ContentProvider {
         int match = sUriMatcher.match(uri);
 
         switch (match) {
-            case TASK_WITH_ID:
+            case TASKS:
                 // update a single task by getting the id
                 String id = uri.getPathSegments().get(1);
                 // using selections

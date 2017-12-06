@@ -38,7 +38,7 @@ public class AddTaskActivity extends AppCompatActivity {
     EditText textGoesHere;
     Boolean isTextToBeEdited;
     ContentValues contentValues;
-    int itemId;
+    int item;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +49,6 @@ public class AddTaskActivity extends AppCompatActivity {
         extras = editIntent.getExtras();
         // where the text from the clicked list item goes
         textGoesHere = (EditText) findViewById(R.id.editTextTaskDescription);
-        itemId = (int) extras.get("ItemId");
-
 
         // Initialize to highest mPriority by default (mPriority = 1)
         ((RadioButton) findViewById(R.id.radButton1)).setChecked(true);
@@ -74,8 +72,8 @@ public class AddTaskActivity extends AppCompatActivity {
         if (extras != null) {
             isTextToBeEdited = true;
             String textToBeEdited = (String) extras.get("Edit");
+            item = (int) extras.get("ItemId");
             textGoesHere.setText(textToBeEdited);
-
 
         }
     }
@@ -100,21 +98,14 @@ public class AddTaskActivity extends AppCompatActivity {
             // the user clicked on a To-Do list item, so we need to update the contentValues instead
             // of creating a new object
 
-            getContentResolver().update(TaskContract.TaskEntry.TABLE_NAME, contentValues, "_id=" + itemId, null);
-
-            if (uri != null) {
-                Toast.makeText(getBaseContext(), "Task edited with priority level "
-                        + mPriority, Toast.LENGTH_LONG).show();
-            }
+            setContentValues(input);
+            getContentResolver().update(TaskContract.TaskEntry.CONTENT_URI, contentValues,
+                    TaskContract.TaskEntry._ID + "=?", new String[]{String.valueOf(item)});
 
         }else {
             // Insert new task data via a ContentResolver
             // Create new empty ContentValues object
-            contentValues = new ContentValues();
-
-            // Put the task description and selected mPriority into the ContentValues
-            contentValues.put(TaskContract.TaskEntry.COLUMN_DESCRIPTION, input);
-            contentValues.put(TaskContract.TaskEntry.COLUMN_PRIORITY, mPriority);
+            setContentValues(input);
 
             // Insert the content values via a ContentResolver
             uri = getContentResolver().insert(TaskContract.TaskEntry.CONTENT_URI, contentValues);
@@ -131,6 +122,12 @@ public class AddTaskActivity extends AppCompatActivity {
         // Finish activity (this returns back to MainActivity)
         finish();
 
+    }
+
+    private void setContentValues(String input) {
+        contentValues = new ContentValues();
+        contentValues.put(TaskContract.TaskEntry.COLUMN_DESCRIPTION, input);
+        contentValues.put(TaskContract.TaskEntry.COLUMN_PRIORITY, mPriority);
     }
 
 

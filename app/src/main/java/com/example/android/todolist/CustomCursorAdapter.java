@@ -30,6 +30,8 @@ import android.widget.Toast;
 
 import com.example.android.todolist.data.TaskContract;
 
+import static android.provider.BaseColumns._ID;
+
 
 /**
  * This CustomCursorAdapter creates and binds ViewHolders, that hold the description and priority of a task,
@@ -45,6 +47,7 @@ public class CustomCursorAdapter extends RecyclerView.Adapter<CustomCursorAdapte
     String description; // to do item
 
     private RecyclerView recyclerView;
+    int idIndex;
 
 
     /**
@@ -83,7 +86,7 @@ public class CustomCursorAdapter extends RecyclerView.Adapter<CustomCursorAdapte
     public void onBindViewHolder(TaskViewHolder holder, int position) {
 
         // Indices for the _id, description, and priority columns
-        int idIndex = mCursor.getColumnIndex(TaskContract.TaskEntry._ID);
+        idIndex = mCursor.getColumnIndex(_ID);
         int descriptionIndex = mCursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_DESCRIPTION);
         int priorityIndex = mCursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_PRIORITY);
 
@@ -190,16 +193,17 @@ public class CustomCursorAdapter extends RecyclerView.Adapter<CustomCursorAdapte
         @Override
         public void onClick(View view) {
             // the position of the clicked on item
-            int position = getAdapterPosition();
+            mCursor.moveToPosition(getAdapterPosition());
+            int id = mCursor.getInt(idIndex);
 
-            Toast.makeText(mContext, "The item clicked is: " + position, Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "The item clicked is: " + id, Toast.LENGTH_SHORT).show();
 
             // go to the AddTaskActivity
             Intent editTextIntent = new Intent(mContext, AddTaskActivity.class);
             // put the text in the description view that was clicked on in the EditText field
             editTextIntent.putExtra("Edit", taskDescriptionView.getText().toString() );
             // pass the id of the clicked item to the AddTaskActivity
-            editTextIntent.putExtra("ItemId", getItemId());
+            editTextIntent.putExtra("ItemId", id);
             mContext.startActivity(editTextIntent);
         }
     }
