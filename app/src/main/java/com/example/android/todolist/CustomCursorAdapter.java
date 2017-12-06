@@ -30,8 +30,6 @@ import android.widget.Toast;
 
 import com.example.android.todolist.data.TaskContract;
 
-import static android.provider.BaseColumns._ID;
-
 
 /**
  * This CustomCursorAdapter creates and binds ViewHolders, that hold the description and priority of a task,
@@ -43,11 +41,6 @@ public class CustomCursorAdapter extends RecyclerView.Adapter<CustomCursorAdapte
     // Class variables for the Cursor that holds task data and the Context
     private Cursor mCursor;
     private Context mContext;
-
-    String description; // to do item
-
-    private RecyclerView recyclerView;
-    int idIndex;
 
 
     /**
@@ -86,7 +79,7 @@ public class CustomCursorAdapter extends RecyclerView.Adapter<CustomCursorAdapte
     public void onBindViewHolder(TaskViewHolder holder, int position) {
 
         // Indices for the _id, description, and priority columns
-        idIndex = mCursor.getColumnIndex(_ID);
+        int idIndex = mCursor.getColumnIndex(TaskContract.TaskEntry._ID);
         int descriptionIndex = mCursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_DESCRIPTION);
         int priorityIndex = mCursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_PRIORITY);
 
@@ -94,7 +87,7 @@ public class CustomCursorAdapter extends RecyclerView.Adapter<CustomCursorAdapte
 
         // Determine the values of the wanted data
         final int id = mCursor.getInt(idIndex);
-        description = mCursor.getString(descriptionIndex);
+        String description = mCursor.getString(descriptionIndex);
         int priority = mCursor.getInt(priorityIndex);
 
         //Set values
@@ -193,6 +186,7 @@ public class CustomCursorAdapter extends RecyclerView.Adapter<CustomCursorAdapte
         @Override
         public void onClick(View view) {
             // the position of the clicked on item
+            int idIndex = mCursor.getColumnIndex(TaskContract.TaskEntry._ID);
             mCursor.moveToPosition(getAdapterPosition());
             int id = mCursor.getInt(idIndex);
 

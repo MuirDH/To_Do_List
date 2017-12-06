@@ -98,14 +98,18 @@ public class AddTaskActivity extends AppCompatActivity {
             // the user clicked on a To-Do list item, so we need to update the contentValues instead
             // of creating a new object
 
-            setContentValues(input);
+            contentValues = new ContentValues();
+            contentValues.put(TaskContract.TaskEntry.COLUMN_DESCRIPTION, input);
+            contentValues.put(TaskContract.TaskEntry.COLUMN_PRIORITY, mPriority);
             getContentResolver().update(TaskContract.TaskEntry.CONTENT_URI, contentValues,
                     TaskContract.TaskEntry._ID + "=?", new String[]{String.valueOf(item)});
 
         }else {
             // Insert new task data via a ContentResolver
             // Create new empty ContentValues object
-            setContentValues(input);
+            contentValues = new ContentValues();
+            contentValues.put(TaskContract.TaskEntry.COLUMN_DESCRIPTION, input);
+            contentValues.put(TaskContract.TaskEntry.COLUMN_PRIORITY, mPriority);
 
             // Insert the content values via a ContentResolver
             uri = getContentResolver().insert(TaskContract.TaskEntry.CONTENT_URI, contentValues);
@@ -122,12 +126,6 @@ public class AddTaskActivity extends AppCompatActivity {
         // Finish activity (this returns back to MainActivity)
         finish();
 
-    }
-
-    private void setContentValues(String input) {
-        contentValues = new ContentValues();
-        contentValues.put(TaskContract.TaskEntry.COLUMN_DESCRIPTION, input);
-        contentValues.put(TaskContract.TaskEntry.COLUMN_PRIORITY, mPriority);
     }
 
 

@@ -48,9 +48,6 @@ public class MainActivity extends AppCompatActivity implements
     EmptyRecyclerView mRecyclerView;
     View emptyView;
 
-    //static String toDoItem;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
