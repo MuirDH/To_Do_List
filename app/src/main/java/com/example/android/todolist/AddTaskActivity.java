@@ -35,7 +35,10 @@ public class AddTaskActivity extends AppCompatActivity {
     private int mPriority;
     Intent editIntent;
     Bundle extras;
-    EditText text = (EditText) findViewById(R.id.editTextTaskDescription);
+    EditText textGoesHere;
+    Boolean isTextToBeEdited;
+    ContentValues contentValues;
+    int itemId;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +47,17 @@ public class AddTaskActivity extends AppCompatActivity {
 
         editIntent = getIntent();
         extras = editIntent.getExtras();
+        // where the text from the clicked list item goes
+        textGoesHere = (EditText) findViewById(R.id.editTextTaskDescription);
+        itemId = (int) extras.get("ItemId");
+
 
         // Initialize to highest mPriority by default (mPriority = 1)
         ((RadioButton) findViewById(R.id.radButton1)).setChecked(true);
         mPriority = 1;
+
+        // Initialise boolean to false
+        isTextToBeEdited = false;
 
         // insert the text in the clicked on item, if applicable
         insertTextToBeEdited();
@@ -55,10 +65,18 @@ public class AddTaskActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * This method checks if there is any text to be added to the EditText field (i.e. if the user
+     * clicked on a To-Do list item). If there is, then it adds the text so the user can edit it.
+     */
     private void insertTextToBeEdited() {
+        // this is an existing task and we need to update it.
         if (extras != null) {
+            isTextToBeEdited = true;
             String textToBeEdited = (String) extras.get("Edit");
-            text.setText(textToBeEdited);
+            textGoesHere.setText(textToBeEdited);
+
+
         }
     }
 
@@ -70,28 +88,44 @@ public class AddTaskActivity extends AppCompatActivity {
     public void onClickAddTask(View view) {
         // Check if EditText is empty, if not retrieve input and store it in a ContentValues object
         // If the EditText input is empty -> don't create an entry
-        String input = text.getText().toString();
+        String input = textGoesHere.getText().toString();
         Uri uri;
+
 
         if (input.length() == 0) {
             return;
         }
 
-        // Insert new task data via a ContentResolver
-        // Create new empty ContentValues object
-        ContentValues contentValues = new ContentValues();
-        // Put the task description and selected mPriority into the ContentValues
-        contentValues.put(TaskContract.TaskEntry.COLUMN_DESCRIPTION, input);
-        contentValues.put(TaskContract.TaskEntry.COLUMN_PRIORITY, mPriority);
-        // Insert the content values via a ContentResolver
-        uri = getContentResolver().insert(TaskContract.TaskEntry.CONTENT_URI, contentValues);
+        if (isTextToBeEdited){
+            // the user clicked on a To-Do list item, so we need to update the contentValues instead
+            // of creating a new object
 
-        // Display the URI that's returned with a Toast
-        // [Hint] Don't forget to call finish() to return to MainActivity after this insert is complete
-        if(uri != null) {
-            //Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
-            Toast.makeText(getBaseContext(), "Task saved with priority level "
-                    + mPriority, Toast.LENGTH_LONG).show();
+            getContentResolver().update(TaskContract.TaskEntry.TABLE_NAME, contentValues, "_id=" + itemId, null);
+
+            if (uri != null) {
+                Toast.makeText(getBaseContext(), "Task edited with priority level "
+                        + mPriority, Toast.LENGTH_LONG).show();
+            }
+
+        }else {
+            // Insert new task data via a ContentResolver
+            // Create new empty ContentValues object
+            contentValues = new ContentValues();
+
+            // Put the task description and selected mPriority into the ContentValues
+            contentValues.put(TaskContract.TaskEntry.COLUMN_DESCRIPTION, input);
+            contentValues.put(TaskContract.TaskEntry.COLUMN_PRIORITY, mPriority);
+
+            // Insert the content values via a ContentResolver
+            uri = getContentResolver().insert(TaskContract.TaskEntry.CONTENT_URI, contentValues);
+
+            // Display the URI that's returned with a Toast
+            // [Hint] Don't forget to call finish() to return to MainActivity after this insert is complete
+            if(uri != null) {
+                //Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getBaseContext(), "Task saved with priority level "
+                        + mPriority, Toast.LENGTH_LONG).show();
+            }
         }
 
         // Finish activity (this returns back to MainActivity)

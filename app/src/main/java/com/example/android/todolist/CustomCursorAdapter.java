@@ -17,6 +17,7 @@
 package com.example.android.todolist;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v4.content.ContextCompat;
@@ -25,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.todolist.data.TaskContract;
 
@@ -35,13 +37,14 @@ import com.example.android.todolist.data.TaskContract;
  */
 public class CustomCursorAdapter extends RecyclerView.Adapter<CustomCursorAdapter.TaskViewHolder> {
 
+
     // Class variables for the Cursor that holds task data and the Context
     private Cursor mCursor;
     private Context mContext;
 
     String description; // to do item
 
-
+    private RecyclerView recyclerView;
 
 
     /**
@@ -161,7 +164,7 @@ public class CustomCursorAdapter extends RecyclerView.Adapter<CustomCursorAdapte
 
 
     // Inner class for creating ViewHolders
-    class TaskViewHolder extends RecyclerView.ViewHolder{
+    class TaskViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         // Class variables for the task description and priority TextViews
         TextView taskDescriptionView;
@@ -172,14 +175,33 @@ public class CustomCursorAdapter extends RecyclerView.Adapter<CustomCursorAdapte
          *
          * @param itemView The view inflated in onCreateViewHolder
          */
-        public TaskViewHolder(View itemView) {
+        public TaskViewHolder(final View itemView) {
             super(itemView);
 
             taskDescriptionView = (TextView) itemView.findViewById(R.id.taskDescription);
             priorityView = (TextView) itemView.findViewById(R.id.priorityTextView);
 
+
+            itemView.setClickable(true);
+            itemView.setOnClickListener(this);
+
         }
 
+        @Override
+        public void onClick(View view) {
+            // the position of the clicked on item
+            int position = getAdapterPosition();
+
+            Toast.makeText(mContext, "The item clicked is: " + position, Toast.LENGTH_SHORT).show();
+
+            // go to the AddTaskActivity
+            Intent editTextIntent = new Intent(mContext, AddTaskActivity.class);
+            // put the text in the description view that was clicked on in the EditText field
+            editTextIntent.putExtra("Edit", taskDescriptionView.getText().toString() );
+            // pass the id of the clicked item to the AddTaskActivity
+            editTextIntent.putExtra("ItemId", getItemId());
+            mContext.startActivity(editTextIntent);
+        }
     }
 
 
