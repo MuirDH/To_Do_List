@@ -12,6 +12,14 @@
     <style name="WhiteRadioButton" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorControlNormal">@android:color/white</item>
         <item name="colorControlActivated">@android:color/white</item>
+        <item name="android:onClick">onPrioritySelected</item>
+        <item name="android:layout_margin">@dimen/add_task_button_margin</item>
+    </style>
+
+    <style name="EmptyTitleTheme">
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:fontFamily">casual</item>
+
     </style>
 
 </resources>

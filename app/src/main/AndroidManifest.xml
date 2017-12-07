@@ -31,7 +31,7 @@
         <provider
             android:name="com.example.android.todolist.data.TaskContentProvider"
             android:authorities="com.example.android.todolist"
-            android:exported="false"/>
+            android:exported="false" />
 
     </application>
 

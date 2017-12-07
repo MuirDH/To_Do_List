@@ -43,7 +43,7 @@ public class EmptyRecyclerView extends RecyclerView {
         super(context, attributes);
     }
 
-    public EmptyRecyclerView (Context context, AttributeSet attributes, int defStyle) {
+    public EmptyRecyclerView(Context context, AttributeSet attributes, int defStyle) {
         super(context, attributes, defStyle);
     }
 
@@ -52,7 +52,7 @@ public class EmptyRecyclerView extends RecyclerView {
      * adapter is equal to zero, the empty view is shown and the EmptyRecyclerView is hidden. If the
      * item count is not zero, then the empty view is hidden and EmptyRecyclerView is shown.
      */
-    void checkIfEmpty() {
+    private void checkIfEmpty() {
         if (emptyView != null && getAdapter() != null) {
             final boolean emptyViewVisible;
             emptyViewVisible = getAdapter().getItemCount() == 0;
@@ -81,7 +81,7 @@ public class EmptyRecyclerView extends RecyclerView {
         checkIfEmpty();
     }
 
-    public void setEmptyView (View emptyView) {
+    public void setEmptyView(View emptyView) {
         this.emptyView = emptyView;
         checkIfEmpty();
     }

@@ -33,22 +33,23 @@ public class AddTaskActivity extends AppCompatActivity {
 
     // Declare a member variable to keep track of a task's selected mPriority
     private int mPriority;
-    Intent editIntent;
-    Bundle extras;
-    EditText textGoesHere;
-    Boolean isTextToBeEdited;
-    ContentValues contentValues;
-    int item;
+
+    // extras from when user edits a task
+    private Bundle extras;
+    private EditText textGoesHere;
+    private Boolean isTextToBeEdited;
+    private ContentValues contentValues;
+    private int item;
 
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task);
 
-        editIntent = getIntent();
+        Intent editIntent = getIntent();
         extras = editIntent.getExtras();
         // where the text from the clicked list item goes
-        textGoesHere = (EditText) findViewById(R.id.editTextTaskDescription);
+        textGoesHere = findViewById(R.id.editTextTaskDescription);
 
         // Initialize to highest mPriority by default (mPriority = 1)
         ((RadioButton) findViewById(R.id.radButton1)).setChecked(true);
@@ -78,7 +79,6 @@ public class AddTaskActivity extends AppCompatActivity {
         }
     }
 
-
     /**
      * onClickAddTask is called when the "ADD" button is clicked.
      * It retrieves user input and inserts that new task data into the underlying database.
@@ -87,45 +87,52 @@ public class AddTaskActivity extends AppCompatActivity {
         // Check if EditText is empty, if not retrieve input and store it in a ContentValues object
         // If the EditText input is empty -> don't create an entry
         String input = textGoesHere.getText().toString();
+
+        if (input.length() == 0) return;
+
+        addOrEditTask(input);
+
+        // Finish activity (this returns back to MainActivity)
+        finish();
+
+    }
+
+    private void addOrEditTask(String input) {
         Uri uri;
-
-
-        if (input.length() == 0) {
-            return;
-        }
-
-        if (isTextToBeEdited){
+        if (isTextToBeEdited) {
             // the user clicked on a To-Do list item, so we need to update the contentValues instead
             // of creating a new object
 
-            contentValues = new ContentValues();
-            contentValues.put(TaskContract.TaskEntry.COLUMN_DESCRIPTION, input);
-            contentValues.put(TaskContract.TaskEntry.COLUMN_PRIORITY, mPriority);
+            setContentValues(input);
             getContentResolver().update(Uri.parse(TaskContract.TaskEntry.CONTENT_URI + "/" + item), contentValues,
                     TaskContract.TaskEntry._ID + "=?", new String[]{String.valueOf(item)});
 
-        }else {
+        } else {
             // Insert new task data via a ContentResolver
             // Create new empty ContentValues object
-            contentValues = new ContentValues();
-            contentValues.put(TaskContract.TaskEntry.COLUMN_DESCRIPTION, input);
-            contentValues.put(TaskContract.TaskEntry.COLUMN_PRIORITY, mPriority);
+            setContentValues(input);
 
             // Insert the content values via a ContentResolver
             uri = getContentResolver().insert(TaskContract.TaskEntry.CONTENT_URI, contentValues);
 
             // Display the URI that's returned with a Toast
             // [Hint] Don't forget to call finish() to return to MainActivity after this insert is complete
-            if(uri != null) {
-                //Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
-                Toast.makeText(getBaseContext(), "Task saved with priority level "
-                        + mPriority, Toast.LENGTH_LONG).show();
-            }
+            sendToast(uri);
         }
+    }
 
-        // Finish activity (this returns back to MainActivity)
-        finish();
+    private void sendToast(Uri uri) {
+        if (uri != null) {
+            //Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), "Task saved with priority level "
+                    + mPriority, Toast.LENGTH_LONG).show();
+        }
+    }
 
+    private void setContentValues(String input) {
+        contentValues = new ContentValues();
+        contentValues.put(TaskContract.TaskEntry.COLUMN_DESCRIPTION, input);
+        contentValues.put(TaskContract.TaskEntry.COLUMN_PRIORITY, mPriority);
     }
 
 
@@ -134,12 +141,8 @@ public class AddTaskActivity extends AppCompatActivity {
      * It changes the value of mPriority based on the selected button.
      */
     public void onPrioritySelected(View view) {
-        if (((RadioButton) findViewById(R.id.radButton1)).isChecked()) {
-            mPriority = 1;
-        } else if (((RadioButton) findViewById(R.id.radButton2)).isChecked()) {
-            mPriority = 2;
-        } else if (((RadioButton) findViewById(R.id.radButton3)).isChecked()) {
-            mPriority = 3;
-        }
+        if (((RadioButton) findViewById(R.id.radButton1)).isChecked()) mPriority = 1;
+        else if (((RadioButton) findViewById(R.id.radButton2)).isChecked()) mPriority = 2;
+        else if (((RadioButton) findViewById(R.id.radButton3)).isChecked()) mPriority = 3;
     }
 }

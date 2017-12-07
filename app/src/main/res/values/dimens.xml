@@ -3,4 +3,16 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="add_task_priority_top_margin">8dp</dimen>
+    <dimen name="add_task_priority_bottom_margin">8dp</dimen>
+    <dimen name="add_task_button_margin">4dp</dimen>
+    <dimen name="add_task_image_padding">8dp</dimen>
+    <dimen name="add_task_image_height">319dp</dimen>
+    <dimen name="main_activity_recyclerview_bottom_padding">8dp</dimen>
+    <dimen name="main_activity_subflavor_text_top_padding">8dp</dimen>
+    <dimen name="single_item_layout_top_padding">24dp</dimen>
+    <dimen name="single_item_layout_bottom_padding">8dp</dimen>
+    <dimen name="priority_circle_width">22dp</dimen>
+    <dimen name="priority_circle_height">22dp</dimen>
+    <dimen name="task_divider_height">1dp</dimen>
 </resources>

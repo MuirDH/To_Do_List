@@ -30,17 +30,15 @@ import android.widget.Toast;
 
 import com.example.android.todolist.data.TaskContract;
 
-
 /**
  * This CustomCursorAdapter creates and binds ViewHolders, that hold the description and priority of a task,
  * to a RecyclerView to efficiently display data.
  */
 public class CustomCursorAdapter extends RecyclerView.Adapter<CustomCursorAdapter.TaskViewHolder> {
 
-
     // Class variables for the Cursor that holds task data and the Context
     private Cursor mCursor;
-    private Context mContext;
+    private final Context mContext;
 
 
     /**
@@ -48,7 +46,7 @@ public class CustomCursorAdapter extends RecyclerView.Adapter<CustomCursorAdapte
      *
      * @param mContext the current Context
      */
-    public CustomCursorAdapter(Context mContext) {
+    CustomCursorAdapter(Context mContext) {
         this.mContext = mContext;
     }
 
@@ -72,7 +70,7 @@ public class CustomCursorAdapter extends RecyclerView.Adapter<CustomCursorAdapte
     /**
      * Called by the RecyclerView to display data at a specified position in the Cursor.
      *
-     * @param holder The ViewHolder to bind Cursor data to
+     * @param holder   The ViewHolder to bind Cursor data to
      * @param position The position of the data in the Cursor
      */
     @Override
@@ -114,14 +112,18 @@ public class CustomCursorAdapter extends RecyclerView.Adapter<CustomCursorAdapte
     private int getPriorityColor(int priority) {
         int priorityColor = 0;
 
-        switch(priority) {
-            case 1: priorityColor = ContextCompat.getColor(mContext, R.color.materialRed);
+        switch (priority) {
+            case 1:
+                priorityColor = ContextCompat.getColor(mContext, R.color.materialRed);
                 break;
-            case 2: priorityColor = ContextCompat.getColor(mContext, R.color.materialOrange);
+            case 2:
+                priorityColor = ContextCompat.getColor(mContext, R.color.materialOrange);
                 break;
-            case 3: priorityColor = ContextCompat.getColor(mContext, R.color.materialYellow);
+            case 3:
+                priorityColor = ContextCompat.getColor(mContext, R.color.materialYellow);
                 break;
-            default: break;
+            default:
+                break;
         }
         return priorityColor;
     }
@@ -132,9 +134,7 @@ public class CustomCursorAdapter extends RecyclerView.Adapter<CustomCursorAdapte
      */
     @Override
     public int getItemCount() {
-        if (mCursor == null) {
-            return 0;
-        }
+        if (mCursor == null) return 0;
         return mCursor.getCount();
     }
 
@@ -143,39 +143,36 @@ public class CustomCursorAdapter extends RecyclerView.Adapter<CustomCursorAdapte
      * When data changes and a re-query occurs, this function swaps the old Cursor
      * with a newly updated Cursor (Cursor c) that is passed in.
      */
-    public Cursor swapCursor(Cursor c) {
+    Cursor swapCursor(Cursor c) {
         // check if this cursor is the same as the previous cursor (mCursor)
-        if (mCursor == c) {
-            return null; // bc nothing has changed
-        }
+        if (mCursor == c) return null; // bc nothing has changed
+
         Cursor temp = mCursor;
         this.mCursor = c; // new cursor value assigned
 
         //check if this is a valid cursor, then update the cursor
-        if (c != null) {
-            this.notifyDataSetChanged();
-        }
+        if (c != null) this.notifyDataSetChanged();
         return temp;
     }
 
 
     // Inner class for creating ViewHolders
-    class TaskViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    class TaskViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         // Class variables for the task description and priority TextViews
-        TextView taskDescriptionView;
-        TextView priorityView;
+        final TextView taskDescriptionView;
+        final TextView priorityView;
 
         /**
          * Constructor for the TaskViewHolders.
          *
          * @param itemView The view inflated in onCreateViewHolder
          */
-        public TaskViewHolder(final View itemView) {
+        TaskViewHolder(final View itemView) {
             super(itemView);
 
-            taskDescriptionView = (TextView) itemView.findViewById(R.id.taskDescription);
-            priorityView = (TextView) itemView.findViewById(R.id.priorityTextView);
+            taskDescriptionView = itemView.findViewById(R.id.taskDescription);
+            priorityView = itemView.findViewById(R.id.priorityTextView);
 
 
             itemView.setClickable(true);
@@ -195,7 +192,7 @@ public class CustomCursorAdapter extends RecyclerView.Adapter<CustomCursorAdapte
             // go to the AddTaskActivity
             Intent editTextIntent = new Intent(mContext, AddTaskActivity.class);
             // put the text in the description view that was clicked on in the EditText field
-            editTextIntent.putExtra("Edit", taskDescriptionView.getText().toString() );
+            editTextIntent.putExtra("Edit", taskDescriptionView.getText().toString());
             // pass the id of the clicked item to the AddTaskActivity
             editTextIntent.putExtra("ItemId", id);
             mContext.startActivity(editTextIntent);

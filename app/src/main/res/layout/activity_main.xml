@@ -13,7 +13,7 @@
         android:id="@+id/recyclerViewTasks"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="8dp" />
+        android:paddingBottom="@dimen/main_activity_recyclerview_bottom_padding" />
 
     <!-- empty view for the list -->
     <RelativeLayout
@@ -33,22 +33,20 @@
 
         <TextView
             android:id="@+id/empty_title_text"
+            style="@style/EmptyTitleTheme"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/empty_list_image"
-            android:layout_centerHorizontal="true"
-            android:fontFamily="casual"
             android:paddingTop="@dimen/activity_horizontal_margin"
             android:text="@string/empty_view_title_text"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <TextView
+            style="@style/EmptyTitleTheme"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/empty_title_text"
-            android:layout_centerHorizontal="true"
-            android:fontFamily="casual"
-            android:paddingTop="8dp"
+            android:paddingTop="@dimen/main_activity_subflavor_text_top_padding"
             android:text="@string/empty_view_subtitle_text"
             android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 

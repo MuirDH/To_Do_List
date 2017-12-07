@@ -43,11 +43,8 @@ public class MainActivity extends AppCompatActivity implements
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int TASK_LOADER_ID = 0;
 
-    // Member variables for the adapter and RecyclerView
+    // Member variable for the adapter
     private CustomCursorAdapter mAdapter;
-    EmptyRecyclerView mRecyclerView;
-    View emptyView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,24 +52,54 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
         // Set the RecyclerView to its corresponding view
-        mRecyclerView = (EmptyRecyclerView) findViewById(R.id.recyclerViewTasks);
+        EmptyRecyclerView mRecyclerView = findViewById(R.id.recyclerViewTasks);
 
         // Set the layout for the RecyclerView to be a linear layout, which measures and
         // positions items within a RecyclerView into a linear list
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        emptyView = findViewById(R.id.empty_view);
+        View emptyView = findViewById(R.id.empty_view);
         mRecyclerView.setEmptyView(emptyView);
 
         // Initialize the adapter and attach it to the RecyclerView
         mAdapter = new CustomCursorAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
 
+        addTouchHelper(mRecyclerView);
+
+        setFabClickListener();
+
         /*
-         Add a touch helper to the RecyclerView to recognize when a user swipes to delete an item.
-         An ItemTouchHelper enables touch behavior (like swipe and move) on each ViewHolder,
-         and uses callbacks to signal when a user is performing these actions.
+         Ensure a loader is initialized and active. If the loader doesn't already exist, one is
+         created, otherwise the last created loader is re-used.
          */
+        getSupportLoaderManager().initLoader(TASK_LOADER_ID, null, this);
+    }
+
+    private void setFabClickListener() {
+    /*
+     Set the Floating Action Button (FAB) to its corresponding View.
+     Attach an OnClickListener to it, so that when it's clicked, a new intent will be created
+     to launch the AddTaskActivity.
+     */
+        FloatingActionButton fabButton = findViewById(R.id.fab);
+
+        fabButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Create a new intent to start an AddTaskActivity
+                Intent addTaskIntent = new Intent(MainActivity.this, AddTaskActivity.class);
+                startActivity(addTaskIntent);
+            }
+        });
+    }
+
+    private void addTouchHelper(EmptyRecyclerView mRecyclerView) {
+    /*
+     Add a touch helper to the RecyclerView to recognize when a user swipes to delete an item.
+     An ItemTouchHelper enables touch behavior (like swipe and move) on each ViewHolder,
+     and uses callbacks to signal when a user is performing these actions.
+     */
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
@@ -84,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 // Here is where you'll implement swipe to delete
 
-                // COMPLETED (1) Construct the URI for the item to delete
+                // Construct the URI for the item to delete
                 //[Hint] Use getTag (from the adapter code) to get the id of the swiped item
                 // Retrieve the id of the task to delete
                 int id = (int) viewHolder.itemView.getTag();
@@ -94,38 +121,15 @@ public class MainActivity extends AppCompatActivity implements
                 Uri uri = TaskContract.TaskEntry.CONTENT_URI;
                 uri = uri.buildUpon().appendPath(stringId).build();
 
-                // COMPLETED (2) Delete a single row of data using a ContentResolver
+                // Delete a single row of data using a ContentResolver
                 getContentResolver().delete(uri, null, null);
 
-                // COMPLETED (3) Restart the loader to re-query for all tasks after a deletion
+                // Restart the loader to re-query for all tasks after a deletion
                 getSupportLoaderManager().restartLoader(TASK_LOADER_ID, null, MainActivity.this);
 
             }
         }).attachToRecyclerView(mRecyclerView);
-
-        /*
-         Set the Floating Action Button (FAB) to its corresponding View.
-         Attach an OnClickListener to it, so that when it's clicked, a new intent will be created
-         to launch the AddTaskActivity.
-         */
-        FloatingActionButton fabButton = (FloatingActionButton) findViewById(R.id.fab);
-
-        fabButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Create a new intent to start an AddTaskActivity
-                Intent addTaskIntent = new Intent(MainActivity.this, AddTaskActivity.class);
-                startActivity(addTaskIntent);
-            }
-        });
-
-        /*
-         Ensure a loader is initialized and active. If the loader doesn't already exist, one is
-         created, otherwise the last created loader is re-used.
-         */
-        getSupportLoaderManager().initLoader(TASK_LOADER_ID, null, this);
     }
-
 
 
     /**
@@ -145,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * Instantiates and returns a new AsyncTaskLoader with the given ID.
      * This loader will return task data as a Cursor or null if an error occurs.
-     *
+     * <p>
      * Implements the required callbacks to take care of loading data at all stages of loading.
      */
     @SuppressLint("StaticFieldLeak")
@@ -160,13 +164,9 @@ public class MainActivity extends AppCompatActivity implements
             // onStartLoading() is called when a loader first starts loading data
             @Override
             protected void onStartLoading() {
-                if (mTaskData != null) {
-                    // Delivers any previously loaded data immediately
-                    deliverResult(mTaskData);
-                } else {
-                    // Force a new load
-                    forceLoad();
-                }
+                // Delivers any previously loaded data immediately
+                if (mTaskData != null) deliverResult(mTaskData);
+                else forceLoad(); // Force a new load
             }
 
             // loadInBackground() performs asynchronous loading of data
@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements
      * Called when a previously created loader has finished its load.
      *
      * @param loader The Loader that has finished.
-     * @param data The data generated by the Loader.
+     * @param data   The data generated by the Loader.
      */
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
@@ -223,8 +223,8 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-            mAdapter.swapCursor(null);
-        }
+        mAdapter.swapCursor(null);
+    }
 
 }
 

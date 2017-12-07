@@ -109,8 +109,9 @@ public class TaskContentProvider extends ContentProvider {
         }
 
         // Notify the resolver if the uri has been changed, and return the newly inserted URI
-        if (getContext() != null)
+        if (getContext() != null) {
             getContext().getContentResolver().notifyChange(uri, null);
+        }
 
         // Return constructed uri (this points to the newly inserted row of data)
         return returnUri;
@@ -147,8 +148,9 @@ public class TaskContentProvider extends ContentProvider {
         }
 
         // Set a notification URI on the Cursor and return that Cursor
-        if (getContext() != null)
+        if (getContext() != null) {
             retCursor.setNotificationUri(getContext().getContentResolver(), uri);
+        }
 
         // Return the desired Cursor
         return retCursor;
@@ -174,7 +176,7 @@ public class TaskContentProvider extends ContentProvider {
                 // Get the task ID from the URI path
                 String id = uri.getPathSegments().get(1);
                 // Use selections/selectionArgs to filter for this ID
-                tasksDeleted = db.delete(TABLE_NAME, "_id=?", new String[]{id});
+                tasksDeleted = db.delete(TABLE_NAME, "id=?", new String[]{id});
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -221,8 +223,9 @@ public class TaskContentProvider extends ContentProvider {
 
         if (tasksUpdated != 0) {
             // set notifications if a task was updated
-            if (getContext() != null)
+            if (getContext() != null) {
                 getContext().getContentResolver().notifyChange(uri, null);
+            }
         }
 
         // return number of tasks updated
