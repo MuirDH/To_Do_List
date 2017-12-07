@@ -28,7 +28,6 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
@@ -48,9 +47,6 @@ public class MainActivity extends AppCompatActivity implements
 
     // Member variable for the adapter
     private CustomCursorAdapter mAdapter;
-
-    // ShareActionProvider for the menu
-    private ShareActionProvider shareActionProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
