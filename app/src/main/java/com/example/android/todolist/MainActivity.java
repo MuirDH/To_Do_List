@@ -28,8 +28,11 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.example.android.todolist.data.TaskContract;
@@ -45,6 +48,9 @@ public class MainActivity extends AppCompatActivity implements
 
     // Member variable for the adapter
     private CustomCursorAdapter mAdapter;
+
+    // ShareActionProvider for the menu
+    private ShareActionProvider shareActionProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +80,36 @@ public class MainActivity extends AppCompatActivity implements
          created, otherwise the last created loader is re-used.
          */
         getSupportLoaderManager().initLoader(TASK_LOADER_ID, null, this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate menu resource file to add the menu item(s) to the app bar
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        // Return true to display menu
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Use a switch/case in the event that we need to add more menu options in future
+        switch (item.getItemId()) {
+
+            // Respond to a click on the "Share" menu option
+            case R.id.menu_item_share:
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, ""
+                        /*TODO: get the contents of the database in a string */);
+                shareIntent.setType("text/plain");
+
+                // Calling createChooser will always display the chooser so the user has an option
+                // for which app to use to share their to do list
+                startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.share) ));
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void setFabClickListener() {
